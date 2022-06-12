@@ -1,0 +1,15 @@
+---
+version: '3.7'
+
+services:
+    ssh:
+        build:
+            context: .
+            args:
+                USERNAME: ${EXAMPLE_USERNAME}
+                PASSWORD: ${EXAMPLE_PASSWORD}
+        ports:
+            - "${EXAMPLE_SSH_PORT}:22"
+        volumes:
+            - ./scripts.d:/scripts.d
+        command: /scripts.d/sbin/docker-init.sh
