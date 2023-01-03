@@ -8,11 +8,17 @@ This is a docker-compose file to be use as a sample ssh server.
 
 ### Asumptions
 
-- User has an ssh client application installed in his/her machine
-- User has an ssh public key configured in his/her machine
-- User is using *[default.env](./default.env)** as **[.env](./.env)* without modification
+This document is written with assumptions:
 
-### Default .env
+- User has an ssh client application installed in his/her machine
+
+- User has an ssh public key configured in his/her machine
+
+- User is using **[default.env](./default.env)** as **[.env](./.env)** without modification
+
+- User have no SSH service running on his/her machine
+
+### default.env
 
 Key              | Value
 -----------------|------
@@ -24,7 +30,7 @@ EXAMPLE_SSH_PORT | 22
 
 On the first run, copy **[default.env](./default.env)** as **[.env](./.env)**
 
-## How to run
+## How to run/create SSH server container
 
 To start SSH Service, run:
 
@@ -38,7 +44,7 @@ or use `--build` parameter if there's changes on Dockerfile
 docker-compose up --build
 ```
 
-## How to stop
+## How to stop SSH server container
 
 To shutdown, the services
 
@@ -46,20 +52,18 @@ To shutdown, the services
 docker-compose down
 ```
 
-## Accessing SSH
+## Accessing SSH server container
 
 To be able access the ssh server type:
-
-Syntax:
 
 ```bash
 ssh <remote_user>@<remote server address> -p <remote ssh port>
 ```
 
-Example with default .env:
+Example if your container was created using default.env:
 
 ```bash
-ssh test@localhot -p 22
+ssh test@localhost -p 22
 ```
 
 ### Accessing SSH without asking password
@@ -77,7 +81,7 @@ Sytax:
 sshpass -p "<remote user password>" ssh <remote_user>@<remote server address> -p <remote ssh port>
 ```
 
-Example with default .env:
+Example with default.env:
 
 ```bash
 sshpass -p "test" ssh test@localhost
@@ -87,16 +91,60 @@ Some people or system is considering sshpass as an unsafe solution, so maybe it'
 
 #### Passwordless public key
 
-If you had a passwordless public key, you can copy it into target remote server, so you could access without inputing password
+If you had a passwordless public key, you can copy it into target remote server, so your current device could access the server without inputing password
 
-Syntax:
+Create SSH key, with empty password:
+
+```bash
+ssh-keygen -t <type of key> -f <filename of the key file>
+```
+
+Copy the passwordless key to server:
 
 ```bash
 ssh-copy-id -p <remote ssh port> <remote_user>@<remote server address>
 ```
 
-Example with default .env:
+or, if you have multiple SSH on your machine:
 
 ```bash
-ssh-copy-id -p 22 test@localhost
+ssh-copy-id -i ~/.ssh/test_rsa -o 'IdentityFile ~/.ssh/test_rsa' <remote_user>@<remote server address
+```
+
+Try to test passwordless access:
+
+```bash
+ssh <remote_user>@<remote server address> -p <remote ssh port>
+```
+
+##### Example if your server container was created using default.env
+
+Create SSH key, with empty password:
+
+```bash
+ssh-keygen -t RSA -f ~/.ssh/test_rsa
+```
+
+Copy the passwordless key to server:
+
+```bash
+ssh-copy-id -i ~/.ssh/test_rsa test@localhost
+```
+
+or, if you have multiple SSH on your machine:
+
+```bash
+ssh-copy-id -i ~/.ssh/test_rsa -o 'IdentityFile ~/.ssh/test_rsa' test@localhost
+```
+
+Try to test passwordless access:
+
+```bash
+ssh test@localhost -p 22
+```
+
+or, if you have multiple SSH on your machine:
+
+```bash
+ssh -i ~/.ssh/test_rsa -p 22 test@localhost
 ```
