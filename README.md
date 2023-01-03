@@ -91,9 +91,12 @@ Some people or system is considering sshpass as an unsafe solution, so maybe it'
 
 #### Passwordless public key
 
-If you had a passwordless public key, you can copy it into target remote server, so your current device could access the server without inputing password
+If you had a passwordless public key, you can copy it into target remote server, so your current device could access the server without inputing password.
 
-Create SSH key, with empty password:
+> **Warning!**
+> Since you're not putting any password, if your machine is compromised, then your server will be at a risk too to get compromised through access from your machine. Only use this method on closed environment.
+
+If you have no passwordless SSH key yet, create it with empty password:
 
 ```bash
 ssh-keygen -t <type of key> -f <filename of the key file>
@@ -105,7 +108,7 @@ Copy the passwordless key to server:
 ssh-copy-id -p <remote ssh port> <remote_user>@<remote server address>
 ```
 
-or, if you have multiple SSH on your machine:
+or, if you have multiple SSH keys on your machine:
 
 ```bash
 ssh-copy-id -i ~/.ssh/test_rsa -o 'IdentityFile ~/.ssh/test_rsa' <remote_user>@<remote server address
@@ -119,7 +122,7 @@ ssh <remote_user>@<remote server address> -p <remote ssh port>
 
 ##### Example if your server container was created using default.env
 
-Create SSH key, with empty password:
+If you have no passwordless SSH key yet, create it with empty password:
 
 ```bash
 ssh-keygen -t RSA -f ~/.ssh/test_rsa
@@ -131,7 +134,7 @@ Copy the passwordless key to server:
 ssh-copy-id -i ~/.ssh/test_rsa test@localhost
 ```
 
-or, if you have multiple SSH on your machine:
+or, if you have multiple SSH keys on your machine:
 
 ```bash
 ssh-copy-id -i ~/.ssh/test_rsa -o 'IdentityFile ~/.ssh/test_rsa' test@localhost
@@ -143,7 +146,7 @@ Try to test passwordless access:
 ssh test@localhost -p 22
 ```
 
-or, if you have multiple SSH on your machine:
+or, if you have multiple SSH keys on your machine:
 
 ```bash
 ssh -i ~/.ssh/test_rsa -p 22 test@localhost
